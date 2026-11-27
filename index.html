@@ -3,29 +3,77 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>銘柄ランダムジェネレーター</title>
+<title>銘柄ランダム生成ツール 株みくじ</title>
+
 <style>
 *{box-sizing:border-box}
+
 body{
-  margin:0;background:#f5f6f8;color:#202735;
+  margin:0;
+  background:#f5f6f8;
+  color:#202735;
   font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif;
 }
-main{max-width:560px;margin:65px auto;padding:24px}
-header{text-align:center;margin-bottom:35px}
-h1{font-size:27px;letter-spacing:1px;margin:0}
-.sub{color:#89919e;font-size:11px;letter-spacing:2px;margin-top:8px}
-.panel{
-  background:white;border:1px solid #e7e9ee;
-  border-radius:18px;padding:38px 20px;text-align:center;
+
+main{
+  max-width:560px;
+  margin:65px auto;
+  padding:24px;
 }
-.label{font-size:11px;color:#929aa7;letter-spacing:2px}
-#result-label{display:none}
-#code{font-size:36px;font-weight:750;margin:16px 0 4px}
-#name{font-size:21px;font-weight:650;min-height:32px}
-#market{font-size:12px;color:#818b99;margin-top:12px}
+
+header{
+  text-align:center;
+  margin-bottom:35px;
+}
+
+h1{
+  font-size:27px;
+  letter-spacing:1px;
+  margin:0;
+  line-height:1.6;
+}
+
+.panel{
+  background:white;
+  border:1px solid #e7e9ee;
+  border-radius:18px;
+  padding:38px 20px;
+  text-align:center;
+}
+
+.label{
+  font-size:11px;
+  color:#929aa7;
+  letter-spacing:2px;
+}
+
+#result-label{
+  display:none;
+}
+
+#code{
+  font-size:36px;
+  font-weight:750;
+  margin:16px 0 4px;
+}
+
+#name{
+  font-size:21px;
+  font-weight:650;
+  min-height:32px;
+}
+
+#market{
+  font-size:12px;
+  color:#818b99;
+  margin-top:12px;
+}
+
 .link{
   display:none;
 }
+
+/* 外部サイトボタン */
 
 .site-links{
   display:grid;
@@ -33,6 +81,7 @@ h1{font-size:27px;letter-spacing:1px;margin:0}
   gap:10px;
   margin-top:24px;
 }
+
 .site-links a{
   display:flex;
   align-items:center;
@@ -44,102 +93,249 @@ h1{font-size:27px;letter-spacing:1px;margin:0}
   font-weight:700;
   transition:opacity .2s;
 }
-.site-links a:hover{opacity:.8}
-.kabutan{background:#e8f0ff;color:#2459a6}
-.yahoo{background:#fff0f0;color:#c52d36}
-.nikkei{background:#e9e9e9;color:#222}
+
+.site-links a:hover{
+  opacity:.8;
+}
+
+.kabutan{
+  background:#e8f0ff;
+  color:#2459a6;
+}
+
+.yahoo{
+  background:#fff0f0;
+  color:#c52d36;
+}
+
+.nikkei{
+  background:#e9e9e9;
+  color:#222;
+}
+
+/* 抽選ボタン */
 
 button{
-  display:block;width:100%;border:0;border-radius:12px;
-  padding:17px;background:#243650;color:white;
-  font-size:16px;font-weight:700;cursor:pointer;margin-top:24px;
+  display:block;
+  width:100%;
+  border:0;
+  border-radius:12px;
+  padding:17px;
+  background:#243650;
+  color:white;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:24px;
 }
-button:hover{background:#304360}
-button:disabled{opacity:.5}
-.info{text-align:center;color:#929aa7;font-size:12px;margin-top:22px}
-#error{color:#b64b4b;text-align:center;font-size:13px}
+
+button:hover{
+  background:#304360;
+}
+
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.info{
+  text-align:center;
+  color:#929aa7;
+  font-size:12px;
+  line-height:1.8;
+  margin-top:22px;
+}
+
+#error{
+  color:#b64b4b;
+  text-align:center;
+  font-size:13px;
+}
+
 @media(max-width:600px){
-  main{margin:30px auto;padding:18px}
-  .site-links{gap:7px}
-  .site-links a{font-size:12px;min-height:48px}
+  main{
+    margin:30px auto;
+    padding:18px;
+  }
+
+  h1{
+    font-size:24px;
+  }
+
+  .site-links{
+    gap:7px;
+  }
+
+  .site-links a{
+    font-size:12px;
+    min-height:48px;
+  }
+
+  .info{
+    font-size:11px;
+  }
 }
 </style>
 </head>
+
 <body>
+
 <main>
+
 <header>
-  <h1>銘柄ランダムジェネレーター</h1>
+  <h1>
+    銘柄ランダム生成ツール<br>
+    株みくじ
+  </h1>
 </header>
 
 <section class="panel">
+
   <div class="label" id="result-label">
     あなたの引いた銘柄はこれ！
   </div>
+
   <div id="code">????</div>
-  <div id="name">銘柄を引いてください</div>
+
+  <div id="name">
+    銘柄を引いてください
+  </div>
+
   <div id="market"></div>
-  <a id="link" class="link" target="_blank" rel="noopener noreferrer"></a>
+
+  <a id="link"
+     class="link"
+     target="_blank"
+     rel="noopener noreferrer"></a>
+
 </section>
 
+<!-- 外部サイトリンク -->
+
 <div class="site-links">
-  <a class="kabutan" href="https://kabutan.jp/"
-     target="_blank" rel="noopener noreferrer">株探</a>
 
-  <a class="yahoo" href="https://finance.yahoo.co.jp/"
-     target="_blank" rel="noopener noreferrer">Yahoo!ファイナンス</a>
+  <a class="kabutan"
+     href="https://kabutan.jp/"
+     target="_blank"
+     rel="noopener noreferrer">
+    株探
+  </a>
 
-  <a class="nikkei" href="https://www.nikkei.com/"
-     target="_blank" rel="noopener noreferrer">日経</a>
+  <a class="yahoo"
+     href="https://finance.yahoo.co.jp/"
+     target="_blank"
+     rel="noopener noreferrer">
+    Yahoo!ファイナンス
+  </a>
+
+  <a class="nikkei"
+     href="https://www.nikkei.com/"
+     target="_blank"
+     rel="noopener noreferrer">
+    日経
+  </a>
+
 </div>
 
-<button id="draw" disabled>🎲 抽選する</button>
-<div class="info" id="status">銘柄データを読み込んでいます...</div>
+<button id="draw" disabled>
+  🎲 抽選する
+</button>
+
+<div class="info" id="status">
+  銘柄データを読み込んでいます...
+</div>
+
 <div id="error"></div>
+
 </main>
 
 <script>
+
 let stocks=[];
 
+// 銘柄データ読み込み
+
 async function loadStocks(){
+
   try{
+
     const response=await fetch("./stocks.json");
-    if(!response.ok)throw new Error("銘柄データが見つかりません");
+
+    if(!response.ok){
+      throw new Error("銘柄データが見つかりません");
+    }
 
     stocks=await response.json();
 
-    if(!Array.isArray(stocks)||stocks.length===0)
+    if(!Array.isArray(stocks)||stocks.length===0){
       throw new Error("銘柄データが空です");
+    }
+
+    // 対象銘柄数を表示
 
     document.getElementById("status").textContent=
-      stocks.length.toLocaleString()+"銘柄";
+      "2026年10月31日時点で東証プライム・スタンダード・グロースに上場の"+
+      stocks.length.toLocaleString()+
+      "銘柄。ETF、REIT、PRO Market等は除く。";
 
     document.getElementById("draw").disabled=false;
 
   }catch(e){
-    document.getElementById("status").textContent="データ読み込みエラー";
+
+    document.getElementById("status").textContent=
+      "データ読み込みエラー";
+
     document.getElementById("error").textContent=e.message;
+
   }
+
 }
 
+// 抽選機能
+
 document.getElementById("draw").addEventListener("click",()=>{
+
   if(!stocks.length)return;
 
-  const stock=stocks[Math.floor(Math.random()*stocks.length)];
+  // ランダムに銘柄を選択
+
+  const stock=stocks[
+    Math.floor(Math.random()*stocks.length)
+  ];
+
+  // 抽選結果を表示
 
   document.getElementById("result-label").style.display="block";
-  document.getElementById("code").textContent=stock.code;
-  document.getElementById("name").textContent=stock.name;
-  document.getElementById("market").textContent=stock.market||"";
 
-  const url="https://kabutan.jp/stock/?code="+encodeURIComponent(stock.code);
+  document.getElementById("code").textContent=stock.code;
+
+  document.getElementById("name").textContent=stock.name;
+
+  document.getElementById("market").textContent=
+    stock.market||"";
+
+  // 株探の個別銘柄ページへのリンクを設定
+
+  const url=
+    "https://kabutan.jp/stock/?code="+
+    encodeURIComponent(stock.code);
 
   const link=document.getElementById("link");
+
   link.href=url;
 
-  document.getElementById("draw").textContent="🎲 もう一回引く";
+  // 抽選ボタンの表示変更
+
+  document.getElementById("draw").textContent=
+    "🎲 もう一回引く";
+
 });
 
+// 起動時に銘柄データを読み込む
+
 loadStocks();
+
 </script>
+
 </body>
 </html>
