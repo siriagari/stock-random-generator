@@ -19,16 +19,14 @@ h1{font-size:27px;letter-spacing:1px;margin:0}
   border-radius:18px;padding:38px 20px;text-align:center;
 }
 .label{font-size:11px;color:#929aa7;letter-spacing:2px}
+#result-label{display:none}
 #code{font-size:36px;font-weight:750;margin:16px 0 4px}
 #name{font-size:21px;font-weight:650;min-height:32px}
 #market{font-size:12px;color:#818b99;margin-top:12px}
 .link{
-  display:none;margin-top:16px;color:#dc3545;
-  font-size:13px;font-weight:600;text-decoration:underline;
-  overflow-wrap:anywhere;
+  display:none;
 }
 
-/* 外部サイトボタン */
 .site-links{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -74,14 +72,15 @@ button:disabled{opacity:.5}
 </header>
 
 <section class="panel">
-  <div class="label">あなたの引いた銘柄はこれ！</div>
+  <div class="label" id="result-label">
+    あなたの引いた銘柄はこれ！
+  </div>
   <div id="code">????</div>
   <div id="name">銘柄を引いてください</div>
   <div id="market"></div>
   <a id="link" class="link" target="_blank" rel="noopener noreferrer"></a>
 </section>
 
-<!-- 外部サイトリンク -->
 <div class="site-links">
   <a class="kabutan" href="https://kabutan.jp/"
      target="_blank" rel="noopener noreferrer">株探</a>
@@ -127,6 +126,7 @@ document.getElementById("draw").addEventListener("click",()=>{
 
   const stock=stocks[Math.floor(Math.random()*stocks.length)];
 
+  document.getElementById("result-label").style.display="block";
   document.getElementById("code").textContent=stock.code;
   document.getElementById("name").textContent=stock.name;
   document.getElementById("market").textContent=stock.market||"";
@@ -135,8 +135,6 @@ document.getElementById("draw").addEventListener("click",()=>{
 
   const link=document.getElementById("link");
   link.href=url;
-  link.textContent=url;
-  link.style.display="inline-block";
 
   document.getElementById("draw").textContent="🎲 もう一回引く";
 });
