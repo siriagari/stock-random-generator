@@ -210,15 +210,6 @@ button:disabled{
 
 <div class="site-links">
 
-  <a id="kabutan"
-     class="kabutan disabled"
-     href="#"
-     target="_blank"
-     rel="noopener noreferrer"
-     aria-disabled="true">
-    株探
-  </a>
-
   <a id="yahoo"
      class="yahoo disabled"
      href="#"
@@ -226,6 +217,15 @@ button:disabled{
      rel="noopener noreferrer"
      aria-disabled="true">
     Yahoo!ファイナンス
+  </a>
+
+  <a id="kabutan"
+     class="kabutan disabled"
+     href="#"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-disabled="true">
+    株探
   </a>
 
   <a id="nikkei"
@@ -301,11 +301,11 @@ function setStockLinks(code){
 
   const links={
 
-    kabutan:
-      "https://kabutan.jp/stock/?code="+encodedCode,
-
     yahoo:
       "https://finance.yahoo.co.jp/quote/"+encodedCode+".T",
+
+    kabutan:
+      "https://kabutan.jp/stock/?code="+encodedCode,
 
     nikkei:
       "https://www.nikkei.com/nkd/company/?scode="+encodedCode
