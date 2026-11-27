@@ -380,7 +380,7 @@ button:disabled{
 
 let stocks=[];
 
-// 全市場を対象に、優待条件だけを適用
+// JSONの市場・優待フラグで抽選対象を絞り込む
 function getFilteredStocks(){
   const benefitOnly=document.getElementById("benefit-only").checked;
   const markets=[...document.querySelectorAll(".market-check:checked")].map(x=>x.value);
@@ -390,7 +390,7 @@ function getFilteredStocks(){
     growth:["growth","グロース","東証グロース","東G","g"]
   };
   return stocks.filter(stock=>{
-    const market=String(stock.market||"").trim().toLowerCase();
+    const market=String(stock.market||"").trim().toLowerCase().replace(/市場$/,"");
     return markets.some(m=>aliases[m].some(v=>v.toLowerCase()===market))
       && (!benefitOnly || stock.benefit===true);
   });
@@ -403,6 +403,19 @@ function updateFilter(){
     (benefitOnly ? "株主優待銘柄のみ" : "全銘柄")+
     "（"+filtered.length.toLocaleString()+"銘柄）";
   document.getElementById("draw").disabled=filtered.length===0;
+  document.getElementById("result-label").style.display="none";
+  document.getElementById("code").textContent="????";
+  document.getElementById("name").textContent="銘柄を引いてください";
+  document.getElementById("market").textContent="";
+  document.querySelectorAll(".search-links a").forEach(a=>{
+    a.hidden=true;
+    a.removeAttribute("href");
+  });
+  document.querySelectorAll(".site-links:not(.search-links) a").forEach(a=>{
+    a.classList.add("disabled");
+    a.setAttribute("aria-disabled","true");
+    a.href="#";
+  });
 }
 
 // 銘柄データ読み込み
