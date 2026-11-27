@@ -171,6 +171,12 @@ h1{
 .google{background:#e8f0fe;color:#1a73e8;}
 .search-links a[hidden]{display:none;}
 
+/* 下段の外部サイトボタンを大きくする */
+.site-links:not(.search-links) a{
+  min-height:76px;
+  padding:12px 6px;
+}
+
 /* 抽選ボタン */
 
 button{
@@ -227,6 +233,10 @@ button:disabled{
   .site-links a{
     font-size:12px;
     min-height:48px;
+  }
+
+  .site-links:not(.search-links) a{
+    min-height:68px;
   }
 
   .info{
