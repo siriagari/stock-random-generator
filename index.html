@@ -403,19 +403,7 @@ function updateFilter(){
     (benefitOnly ? "株主優待銘柄のみ" : "全銘柄")+
     "（"+filtered.length.toLocaleString()+"銘柄）";
   document.getElementById("draw").disabled=filtered.length===0;
-  document.getElementById("result-label").style.display="none";
-  document.getElementById("code").textContent="????";
-  document.getElementById("name").textContent="銘柄を引いてください";
-  document.getElementById("market").textContent="";
-  document.querySelectorAll(".search-links a").forEach(a=>{
-    a.hidden=true;
-    a.removeAttribute("href");
-  });
-  document.querySelectorAll(".site-links:not(.search-links) a").forEach(a=>{
-    a.classList.add("disabled");
-    a.setAttribute("aria-disabled","true");
-    a.href="#";
-  });
+
 }
 
 // 銘柄データ読み込み
