@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -28,6 +27,30 @@ h1{font-size:27px;letter-spacing:1px;margin:0}
   font-size:13px;font-weight:600;text-decoration:underline;
   overflow-wrap:anywhere;
 }
+
+/* 外部サイトボタン */
+.site-links{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:24px;
+}
+.site-links a{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:52px;
+  border-radius:10px;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+  transition:opacity .2s;
+}
+.site-links a:hover{opacity:.8}
+.kabutan{background:#e8f0ff;color:#2459a6}
+.yahoo{background:#fff0f0;color:#c52d36}
+.nikkei{background:#e9e9e9;color:#222}
+
 button{
   display:block;width:100%;border:0;border-radius:12px;
   padding:17px;background:#243650;color:white;
@@ -37,7 +60,11 @@ button:hover{background:#304360}
 button:disabled{opacity:.5}
 .info{text-align:center;color:#929aa7;font-size:12px;margin-top:22px}
 #error{color:#b64b4b;text-align:center;font-size:13px}
-@media(max-width:600px){main{margin:30px auto;padding:18px}}
+@media(max-width:600px){
+  main{margin:30px auto;padding:18px}
+  .site-links{gap:7px}
+  .site-links a{font-size:12px;min-height:48px}
+}
 </style>
 </head>
 <body>
@@ -45,47 +72,75 @@ button:disabled{opacity:.5}
 <header>
   <h1>銘柄ランダムジェネレーター</h1>
 </header>
+
 <section class="panel">
-  <div class="label">YOUR DISCOVERED STOCK</div>
+  <div class="label">あなたの引いた銘柄はこれ！</div>
   <div id="code">????</div>
   <div id="name">銘柄を引いてください</div>
   <div id="market"></div>
   <a id="link" class="link" target="_blank" rel="noopener noreferrer"></a>
 </section>
+
+<!-- 外部サイトリンク -->
+<div class="site-links">
+  <a class="kabutan" href="https://kabutan.jp/"
+     target="_blank" rel="noopener noreferrer">株探</a>
+
+  <a class="yahoo" href="https://finance.yahoo.co.jp/"
+     target="_blank" rel="noopener noreferrer">Yahoo!ファイナンス</a>
+
+  <a class="nikkei" href="https://www.nikkei.com/"
+     target="_blank" rel="noopener noreferrer">日経</a>
+</div>
+
 <button id="draw" disabled>🎲 抽選する</button>
 <div class="info" id="status">銘柄データを読み込んでいます...</div>
 <div id="error"></div>
 </main>
+
 <script>
 let stocks=[];
+
 async function loadStocks(){
   try{
     const response=await fetch("./stocks.json");
     if(!response.ok)throw new Error("銘柄データが見つかりません");
+
     stocks=await response.json();
+
     if(!Array.isArray(stocks)||stocks.length===0)
       throw new Error("銘柄データが空です");
+
     document.getElementById("status").textContent=
       stocks.length.toLocaleString()+"銘柄";
+
     document.getElementById("draw").disabled=false;
+
   }catch(e){
     document.getElementById("status").textContent="データ読み込みエラー";
     document.getElementById("error").textContent=e.message;
   }
 }
+
 document.getElementById("draw").addEventListener("click",()=>{
   if(!stocks.length)return;
+
   const stock=stocks[Math.floor(Math.random()*stocks.length)];
+
   document.getElementById("code").textContent=stock.code;
   document.getElementById("name").textContent=stock.name;
   document.getElementById("market").textContent=stock.market||"";
+
   const url="https://kabutan.jp/stock/?code="+encodeURIComponent(stock.code);
+
   const link=document.getElementById("link");
   link.href=url;
   link.textContent=url;
   link.style.display="inline-block";
+
   document.getElementById("draw").textContent="🎲 もう一回引く";
 });
+
 loadStocks();
 </script>
 </body>
