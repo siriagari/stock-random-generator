@@ -379,6 +379,8 @@ button:disabled{
 <script>
 
 let stocks=[];
+let currentStock=null;
+
 
 // JSONの市場・優待フラグで抽選対象を絞り込む
 function getFilteredStocks(){
@@ -403,7 +405,7 @@ function updateFilter(){
     (benefitOnly ? "株主優待銘柄のみ" : "全銘柄")+
     "（"+filtered.length.toLocaleString()+"銘柄）";
   document.getElementById("draw").disabled=filtered.length===0;
-
+  if(currentStock) renderStock(currentStock);
 }
 
 // 銘柄データ読み込み
@@ -498,12 +500,14 @@ document.getElementById("draw").addEventListener("click",()=>{
     Math.floor(Math.random()*filteredStocks.length)
   ];
 
-  // 抽選結果表示
+  currentStock=stock;
+  renderStock(stock);
+});
 
+// 抽選結果は条件変更時にも維持する
+function renderStock(stock){
   document.getElementById("result-label").style.display="block";
-
   document.getElementById("code").textContent=stock.code;
-
   document.getElementById("name").textContent=stock.name;
   const searchQuery=encodeURIComponent(String(stock.name));
   const yahooSearch=document.getElementById("yahoo-search");
@@ -512,20 +516,10 @@ document.getElementById("draw").addEventListener("click",()=>{
   googleSearch.href="https://www.google.com/search?q="+searchQuery;
   yahooSearch.hidden=false;
   googleSearch.hidden=false;
-
-  document.getElementById("market").textContent=
-    stock.market||"";
-
-  // 3サイトの個別銘柄ページを設定
-
+  document.getElementById("market").textContent=stock.market||"";
   setStockLinks(stock.code);
-
-  // ボタン表示変更
-
-  document.getElementById("draw").textContent=
-    "🎲 もう一回引く";
-
-});
+  document.getElementById("draw").textContent="🎲 もう一回引く";
+}
 
 // 起動
 
