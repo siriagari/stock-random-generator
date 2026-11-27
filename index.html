@@ -294,7 +294,12 @@ button:disabled{
 
   </div>
 
-  <div id="filter-status">
+  <label class="market-option" style="margin-top:8px">
+  <input type="checkbox" id="benefit-only">
+  株主優待銘柄のみ
+</label>
+
+<div id="filter-status">
     3市場すべて選択中
   </div>
 
@@ -401,20 +406,12 @@ function getFilteredStocks(){
 
   const selected=getSelectedMarkets();
 
-  // 3市場すべて選択されていれば全銘柄
-
-  if(selected.length===3){
-    return stocks;
-  }
-
-  if(selected.length===0){
-    return [];
-  }
+  const benefitOnly=document.getElementById("benefit-only").checked;
 
   return stocks.filter(stock=>{
-    return selected.includes(getStockMarket(stock));
+    return selected.includes(getStockMarket(stock)) &&
+      (!benefitOnly || stock.benefit===true);
   });
-
 }
 
 // 抽選対象数とボタン状態を更新
@@ -456,6 +453,9 @@ function updateFilter(){
 
   }
 
+  if(document.getElementById("benefit-only").checked){
+    status.textContent+="・株主優待銘柄のみ";
+  }
   draw.disabled=filtered.length===0;
 
 }
@@ -533,7 +533,7 @@ function setStockLinks(code){
 
 // チェックボックス変更時
 
-document.querySelectorAll(".market-check").forEach(input=>{
+document.querySelectorAll(".market-check, #benefit-only").forEach(input=>{
 
   input.addEventListener("change",updateFilter);
 
