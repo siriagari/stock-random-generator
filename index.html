@@ -164,6 +164,10 @@ h1{
   color:#222;
 }
 
+.search-links{grid-template-columns:repeat(2,1fr);margin-top:12px;}
+.google{background:#e8f0fe;color:#1a73e8;}
+.search-links a[hidden]{display:none;}
+
 /* 抽選ボタン */
 
 button{
@@ -255,9 +259,9 @@ button:disabled{
   </div>
 
   <div id="market"></div>
-<div class="search-links" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px">
-  <a id="yahoo-search" target="_blank" rel="noopener noreferrer" hidden>Yahoo!JAPANで検索</a>
-  <a id="google-search" target="_blank" rel="noopener noreferrer" hidden>Googleで検索</a>
+<div class="site-links search-links">
+  <a id="yahoo-search" class="yahoo" target="_blank" rel="noopener noreferrer" hidden>Yahoo!JAPANで検索</a>
+  <a id="google-search" class="google" target="_blank" rel="noopener noreferrer" hidden>Googleで検索</a>
 </div>
 
 </section>
@@ -565,7 +569,7 @@ document.getElementById("draw").addEventListener("click",()=>{
   document.getElementById("code").textContent=stock.code;
 
   document.getElementById("name").textContent=stock.name;
-  const searchQuery=encodeURIComponent(String(stock.name)+" "+String(stock.code));
+  const searchQuery=encodeURIComponent(String(stock.name));
   const yahooSearch=document.getElementById("yahoo-search");
   const googleSearch=document.getElementById("google-search");
   yahooSearch.href="https://search.yahoo.co.jp/search?p="+searchQuery;
