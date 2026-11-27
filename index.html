@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>銘柄ランダム抽選ツール 株みくじ</title>
+<title>銘柄ランダム抽選ツール</title>
 
 <style>
 *{box-sizing:border-box}
@@ -312,6 +312,11 @@ button:disabled{
 <!-- 市場選択チェックボックス -->
 
 <section class="market-select">
+  <div class="market-options">
+    <label class="market-option"><input type="checkbox" class="market-check" value="prime" checked>プライム</label>
+    <label class="market-option"><input type="checkbox" class="market-check" value="standard" checked>スタンダード</label>
+    <label class="market-option"><input type="checkbox" class="market-check" value="growth" checked>グロース</label>
+  </div>
 
   <label class="market-option" style="margin-top:8px">
   <input type="checkbox" id="benefit-only">
@@ -378,7 +383,17 @@ let stocks=[];
 // 全市場を対象に、優待条件だけを適用
 function getFilteredStocks(){
   const benefitOnly=document.getElementById("benefit-only").checked;
-  return stocks.filter(stock=>!benefitOnly || stock.benefit===true);
+  const markets=[...document.querySelectorAll(".market-check:checked")].map(x=>x.value);
+  const aliases={
+    prime:["prime","プライム","東証プライム","東P","p"],
+    standard:["standard","スタンダード","東証スタンダード","東S","s"],
+    growth:["growth","グロース","東証グロース","東G","g"]
+  };
+  return stocks.filter(stock=>{
+    const market=String(stock.market||"").trim().toLowerCase();
+    return markets.some(m=>aliases[m].some(v=>v.toLowerCase()===market))
+      && (!benefitOnly || stock.benefit===true);
+  });
 }
 
 function updateFilter(){
@@ -462,7 +477,7 @@ function setStockLinks(code){
 
 // チェックボックス変更時
 
-document.querySelectorAll("#benefit-only").forEach(input=>{
+document.querySelectorAll("#benefit-only, .market-check").forEach(input=>{
 
   input.addEventListener("change",updateFilter);
 
