@@ -69,10 +69,6 @@ h1{
   margin-top:12px;
 }
 
-.link{
-  display:none;
-}
-
 /* 外部サイトボタン */
 
 .site-links{
@@ -96,6 +92,11 @@ h1{
 
 .site-links a:hover{
   opacity:.8;
+}
+
+.site-links a.disabled{
+  opacity:.45;
+  pointer-events:none;
 }
 
 .kabutan{
@@ -203,35 +204,36 @@ button:disabled{
 
   <div id="market"></div>
 
-  <a id="link"
-     class="link"
-     target="_blank"
-     rel="noopener noreferrer"></a>
-
 </section>
 
 <!-- 外部サイトリンク -->
 
 <div class="site-links">
 
-  <a class="kabutan"
-     href="https://kabutan.jp/"
+  <a id="kabutan"
+     class="kabutan disabled"
+     href="#"
      target="_blank"
-     rel="noopener noreferrer">
+     rel="noopener noreferrer"
+     aria-disabled="true">
     株探
   </a>
 
-  <a class="yahoo"
-     href="https://finance.yahoo.co.jp/"
+  <a id="yahoo"
+     class="yahoo disabled"
+     href="#"
      target="_blank"
-     rel="noopener noreferrer">
+     rel="noopener noreferrer"
+     aria-disabled="true">
     Yahoo!ファイナンス
   </a>
 
-  <a class="nikkei"
-     href="https://www.nikkei.com/"
+  <a id="nikkei"
+     class="nikkei disabled"
+     href="#"
      target="_blank"
-     rel="noopener noreferrer">
+     rel="noopener noreferrer"
+     aria-disabled="true">
     日経
   </a>
 
@@ -271,7 +273,7 @@ async function loadStocks(){
       throw new Error("銘柄データが空です");
     }
 
-    // 対象銘柄数を表示
+    // 銘柄数表示
 
     document.getElementById("status").textContent=
       "2026年10月31日時点で東証プライム・スタンダード・グロースに上場の"+
@@ -291,6 +293,37 @@ async function loadStocks(){
 
 }
 
+// リンク設定
+
+function setStockLinks(code){
+
+  const encodedCode=encodeURIComponent(String(code));
+
+  const links={
+    kabutan:
+      "https://kabutan.jp/stock/?code="+encodedCode,
+
+    yahoo:
+      "https://finance.yahoo.co.jp/quote/"+encodedCode+".T",
+
+    nikkei:
+      "https://www.nikkei.com/nkd/company/?scode="+encodedCode
+  };
+
+  Object.keys(links).forEach(id=>{
+
+    const element=document.getElementById(id);
+
+    element.href=links[id];
+
+    element.classList.remove("disabled");
+
+    element.removeAttribute("aria-disabled");
+
+  });
+
+}
+
 // 抽選機能
 
 document.getElementById("draw").addEventListener("click",()=>{
@@ -303,7 +336,7 @@ document.getElementById("draw").addEventListener("click",()=>{
     Math.floor(Math.random()*stocks.length)
   ];
 
-  // 抽選結果を表示
+  // 抽選結果表示
 
   document.getElementById("result-label").style.display="block";
 
@@ -314,24 +347,18 @@ document.getElementById("draw").addEventListener("click",()=>{
   document.getElementById("market").textContent=
     stock.market||"";
 
-  // 株探の個別銘柄ページへのリンクを設定
+  // 3サイトの個別銘柄ページを設定
 
-  const url=
-    "https://kabutan.jp/stock/?code="+
-    encodeURIComponent(stock.code);
+  setStockLinks(stock.code);
 
-  const link=document.getElementById("link");
-
-  link.href=url;
-
-  // 抽選ボタンの表示変更
+  // ボタン表示変更
 
   document.getElementById("draw").textContent=
     "🎲 もう一回引く";
 
 });
 
-// 起動時に銘柄データを読み込む
+// 起動
 
 loadStocks();
 
