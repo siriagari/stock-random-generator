@@ -69,6 +69,56 @@ h1{
   margin-top:12px;
 }
 
+/* 市場選択 */
+
+.market-select{
+  margin-top:24px;
+  padding:17px;
+  background:white;
+  border:1px solid #e7e9ee;
+  border-radius:12px;
+}
+
+.market-title{
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:13px;
+  text-align:center;
+}
+
+.market-options{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+
+.market-option{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  padding:11px 3px;
+  background:#f5f6f8;
+  border-radius:9px;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.market-option input{
+  width:16px;
+  height:16px;
+  accent-color:#243650;
+  cursor:pointer;
+}
+
+#filter-status{
+  text-align:center;
+  font-size:11px;
+  color:#929aa7;
+  margin-top:12px;
+}
+
 /* 外部サイトボタン */
 
 .site-links{
@@ -190,6 +240,8 @@ button:disabled{
   </h1>
 </header>
 
+<!-- 抽選結果 -->
+
 <section class="panel">
 
   <div class="label" id="result-label">
@@ -203,6 +255,48 @@ button:disabled{
   </div>
 
   <div id="market"></div>
+
+</section>
+
+<!-- 市場選択チェックボックス -->
+
+<section class="market-select">
+
+  <div class="market-title">
+    抽選する市場を選択
+  </div>
+
+  <div class="market-options">
+
+    <label class="market-option">
+      <input type="checkbox"
+             class="market-check"
+             value="prime"
+             checked>
+      プライム
+    </label>
+
+    <label class="market-option">
+      <input type="checkbox"
+             class="market-check"
+             value="standard"
+             checked>
+      スタンダード
+    </label>
+
+    <label class="market-option">
+      <input type="checkbox"
+             class="market-check"
+             value="growth"
+             checked>
+      グロース
+    </label>
+
+  </div>
+
+  <div id="filter-status">
+    3市場すべて選択中
+  </div>
 
 </section>
 
@@ -239,6 +333,8 @@ button:disabled{
 
 </div>
 
+<!-- 抽選ボタン -->
+
 <button id="draw" disabled>
   🎲 抽選する
 </button>
@@ -254,6 +350,115 @@ button:disabled{
 <script>
 
 let stocks=[];
+
+// 市場選択状態を取得
+
+function getSelectedMarkets(){
+
+  return Array.from(
+    document.querySelectorAll(".market-check:checked")
+  ).map(input=>input.value);
+
+}
+
+// 銘柄の市場を判定
+
+function getStockMarket(stock){
+
+  const market=String(stock.market||"").toLowerCase();
+
+  if(
+    market.includes("プライム") ||
+    market.includes("東p") ||
+    market.includes("prime")
+  ){
+    return "prime";
+  }
+
+  if(
+    market.includes("スタンダード") ||
+    market.includes("東s") ||
+    market.includes("standard")
+  ){
+    return "standard";
+  }
+
+  if(
+    market.includes("グロース") ||
+    market.includes("東g") ||
+    market.includes("growth")
+  ){
+    return "growth";
+  }
+
+  return null;
+
+}
+
+// 選択された市場の銘柄を取得
+
+function getFilteredStocks(){
+
+  const selected=getSelectedMarkets();
+
+  // 3市場すべて選択されていれば全銘柄
+
+  if(selected.length===3){
+    return stocks;
+  }
+
+  if(selected.length===0){
+    return [];
+  }
+
+  return stocks.filter(stock=>{
+    return selected.includes(getStockMarket(stock));
+  });
+
+}
+
+// 抽選対象数とボタン状態を更新
+
+function updateFilter(){
+
+  const selected=getSelectedMarkets();
+
+  const filtered=getFilteredStocks();
+
+  const status=document.getElementById("filter-status");
+
+  const draw=document.getElementById("draw");
+
+  if(selected.length===0){
+
+    status.textContent="市場を1つ以上選択してください";
+
+  }else if(selected.length===3){
+
+    status.textContent=
+      "3市場すべて選択中（"+
+      filtered.length.toLocaleString()+
+      "銘柄）";
+
+  }else{
+
+    const names={
+      prime:"プライム",
+      standard:"スタンダード",
+      growth:"グロース"
+    };
+
+    status.textContent=
+      selected.map(value=>names[value]).join("・")+
+      "（"+
+      filtered.length.toLocaleString()+
+      "銘柄）";
+
+  }
+
+  draw.disabled=filtered.length===0;
+
+}
 
 // 銘柄データ読み込み
 
@@ -273,14 +478,14 @@ async function loadStocks(){
       throw new Error("銘柄データが空です");
     }
 
-    // 銘柄数表示
+    // 全登録銘柄数を表示
 
     document.getElementById("status").textContent=
       "2026年10月31日時点で東証プライム・スタンダード・グロースに上場の"+
       stocks.length.toLocaleString()+
       "銘柄。PRO Market、ETF、REIT等は除く。";
 
-    document.getElementById("draw").disabled=false;
+    updateFilter();
 
   }catch(e){
 
@@ -326,16 +531,26 @@ function setStockLinks(code){
 
 }
 
+// チェックボックス変更時
+
+document.querySelectorAll(".market-check").forEach(input=>{
+
+  input.addEventListener("change",updateFilter);
+
+});
+
 // 抽選機能
 
 document.getElementById("draw").addEventListener("click",()=>{
 
-  if(!stocks.length)return;
+  const filteredStocks=getFilteredStocks();
 
-  // ランダムに銘柄を選択
+  if(!filteredStocks.length)return;
 
-  const stock=stocks[
-    Math.floor(Math.random()*stocks.length)
+  // 選択市場の中からランダムに抽選
+
+  const stock=filteredStocks[
+    Math.floor(Math.random()*filteredStocks.length)
   ];
 
   // 抽選結果表示
