@@ -164,7 +164,10 @@ h1{
   color:#222;
 }
 
-.search-links{grid-template-columns:repeat(2,1fr);margin-top:12px;}
+.search-links{grid-template-columns:repeat(6,1fr);margin-top:12px;}
+.search-links a{grid-column:span 2;}
+.search-links a:first-child{grid-column:2 / 4;}
+.search-links a:last-child{grid-column:4 / 6;}
 .google{background:#e8f0fe;color:#1a73e8;}
 .search-links a[hidden]{display:none;}
 
@@ -356,8 +359,6 @@ button:disabled{
 </div>
 
 <div id="error"></div>
-
-<div class="info" id="status">銘柄データを読み込んでいます...</div>
 
 <div class="info">株主優待実施企業リストの出典: <a href="https://yutai-shirabe.com/download/index.html" target="_blank" rel="noopener noreferrer">優待しらべ</a></div>
 </main>
