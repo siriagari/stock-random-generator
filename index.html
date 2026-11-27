@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>銘柄ランダム生成ツール 株みくじ</title>
+<title>銘柄ランダム抽選ツール 株みくじ</title>
 
 <style>
 *{box-sizing:border-box}
@@ -282,7 +282,7 @@ button:disabled{
 
 <header>
   <h1>
-    銘柄ランダム生成ツール<br>
+    銘柄ランダム抽選ツール<br>
     株みくじ
   </h1>
 </header>
@@ -312,38 +312,6 @@ button:disabled{
 <!-- 市場選択チェックボックス -->
 
 <section class="market-select">
-
-  <div class="market-title">
-    抽選する市場を選択
-  </div>
-
-  <div class="market-options">
-
-    <label class="market-option">
-      <input type="checkbox"
-             class="market-check"
-             value="prime"
-             checked>
-      プライム
-    </label>
-
-    <label class="market-option">
-      <input type="checkbox"
-             class="market-check"
-             value="standard"
-             checked>
-      スタンダード
-    </label>
-
-    <label class="market-option">
-      <input type="checkbox"
-             class="market-check"
-             value="growth"
-             checked>
-      グロース
-    </label>
-
-  </div>
 
   <label class="market-option" style="margin-top:8px">
   <input type="checkbox" id="benefit-only">
@@ -407,108 +375,19 @@ button:disabled{
 
 let stocks=[];
 
-// 市場選択状態を取得
-
-function getSelectedMarkets(){
-
-  return Array.from(
-    document.querySelectorAll(".market-check:checked")
-  ).map(input=>input.value);
-
-}
-
-// 銘柄の市場を判定
-
-function getStockMarket(stock){
-
-  const market=String(stock.market||"").toLowerCase();
-
-  if(
-    market.includes("プライム") ||
-    market.includes("東p") ||
-    market.includes("prime")
-  ){
-    return "prime";
-  }
-
-  if(
-    market.includes("スタンダード") ||
-    market.includes("東s") ||
-    market.includes("standard")
-  ){
-    return "standard";
-  }
-
-  if(
-    market.includes("グロース") ||
-    market.includes("東g") ||
-    market.includes("growth")
-  ){
-    return "growth";
-  }
-
-  return null;
-
-}
-
-// 選択された市場の銘柄を取得
-
+// 全市場を対象に、優待条件だけを適用
 function getFilteredStocks(){
-
-  const selected=getSelectedMarkets();
-
   const benefitOnly=document.getElementById("benefit-only").checked;
-
-  return stocks.filter(stock=>{
-    return selected.includes(getStockMarket(stock)) &&
-      (!benefitOnly || stock.benefit===true);
-  });
+  return stocks.filter(stock=>!benefitOnly || stock.benefit===true);
 }
-
-// 抽選対象数とボタン状態を更新
 
 function updateFilter(){
-
-  const selected=getSelectedMarkets();
-
   const filtered=getFilteredStocks();
-
-  const status=document.getElementById("filter-status");
-
-  const draw=document.getElementById("draw");
-
-  if(selected.length===0){
-
-    status.textContent="市場を1つ以上選択してください";
-
-  }else if(selected.length===3){
-
-    status.textContent=
-      "3市場すべて選択中（"+
-      filtered.length.toLocaleString()+
-      "銘柄）";
-
-  }else{
-
-    const names={
-      prime:"プライム",
-      standard:"スタンダード",
-      growth:"グロース"
-    };
-
-    status.textContent=
-      selected.map(value=>names[value]).join("・")+
-      "（"+
-      filtered.length.toLocaleString()+
-      "銘柄）";
-
-  }
-
-  if(document.getElementById("benefit-only").checked){
-    status.textContent+="・株主優待銘柄のみ";
-  }
-  draw.disabled=filtered.length===0;
-
+  const benefitOnly=document.getElementById("benefit-only").checked;
+  document.getElementById("filter-status").textContent=
+    (benefitOnly ? "株主優待銘柄のみ" : "全銘柄")+
+    "（"+filtered.length.toLocaleString()+"銘柄）";
+  document.getElementById("draw").disabled=filtered.length===0;
 }
 
 // 銘柄データ読み込み
@@ -583,7 +462,7 @@ function setStockLinks(code){
 
 // チェックボックス変更時
 
-document.querySelectorAll(".market-check, #benefit-only").forEach(input=>{
+document.querySelectorAll("#benefit-only").forEach(input=>{
 
   input.addEventListener("change",updateFilter);
 
