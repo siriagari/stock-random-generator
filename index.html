@@ -278,7 +278,7 @@ async function loadStocks(){
     document.getElementById("status").textContent=
       "2026年10月31日時点で東証プライム・スタンダード・グロースに上場の"+
       stocks.length.toLocaleString()+
-      "銘柄。ETF、REIT、PRO Market等は除く。";
+      "銘柄。PRO Market、ETF、REIT等は除く。";
 
     document.getElementById("draw").disabled=false;
 
@@ -293,13 +293,14 @@ async function loadStocks(){
 
 }
 
-// リンク設定
+// 個別銘柄ページへのリンク設定
 
 function setStockLinks(code){
 
   const encodedCode=encodeURIComponent(String(code));
 
   const links={
+
     kabutan:
       "https://kabutan.jp/stock/?code="+encodedCode,
 
@@ -308,6 +309,7 @@ function setStockLinks(code){
 
     nikkei:
       "https://www.nikkei.com/nkd/company/?scode="+encodedCode
+
   };
 
   Object.keys(links).forEach(id=>{
