@@ -255,6 +255,10 @@ button:disabled{
   </div>
 
   <div id="market"></div>
+<div class="search-links" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px">
+  <a id="yahoo-search" target="_blank" rel="noopener noreferrer" hidden>Yahoo!JAPANで検索</a>
+  <a id="google-search" target="_blank" rel="noopener noreferrer" hidden>Googleで検索</a>
+</div>
 
 </section>
 
@@ -335,7 +339,6 @@ button:disabled{
      aria-disabled="true">
     日経
   </a>
-
 </div>
 
 <!-- 抽選ボタン -->
@@ -350,6 +353,9 @@ button:disabled{
 
 <div id="error"></div>
 
+<div class="info" id="status">銘柄データを読み込んでいます...</div>
+
+<div class="info">株主優待実施企業リストの出典: <a href="https://yutai-shirabe.com/download/index.html" target="_blank" rel="noopener noreferrer">優待しらべ</a></div>
 </main>
 
 <script>
@@ -514,7 +520,6 @@ function setStockLinks(code){
 
     nikkei:
       "https://www.nikkei.com/nkd/company/?scode="+encodedCode
-
   };
 
   Object.keys(links).forEach(id=>{
@@ -560,6 +565,13 @@ document.getElementById("draw").addEventListener("click",()=>{
   document.getElementById("code").textContent=stock.code;
 
   document.getElementById("name").textContent=stock.name;
+  const searchQuery=encodeURIComponent(String(stock.name)+" "+String(stock.code));
+  const yahooSearch=document.getElementById("yahoo-search");
+  const googleSearch=document.getElementById("google-search");
+  yahooSearch.href="https://search.yahoo.co.jp/search?p="+searchQuery;
+  googleSearch.href="https://www.google.com/search?q="+searchQuery;
+  yahooSearch.hidden=false;
+  googleSearch.hidden=false;
 
   document.getElementById("market").textContent=
     stock.market||"";
